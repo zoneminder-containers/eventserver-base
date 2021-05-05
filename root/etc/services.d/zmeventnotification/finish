@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+. "/usr/local/bin/logger"
+# ==============================================================================
+# ZM Event Notification Server
+# Runs ES in foreground
+# ==============================================================================
+
+pkill -2 -f "/usr/bin/perl -T /usr/bin/zmeventnotification.pl"
+s6-svscanctl -t /var/run/s6/services

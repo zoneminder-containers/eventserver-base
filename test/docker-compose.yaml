@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  db:
+    container_name: db
+    image: mariadb
+    restart: always
+    networks:
+      - zoneminder
+    volumes:
+      - ./zm/db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=zm
+    env_file:
+      - ./.env
+
+  zoneminder:
+    container_name: zoneminder
+    image: ci:latest
+    restart: always
+    stop_grace_period: 45s
+    depends_on:
+      - db
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - zoneminder
+    volumes:
+      - ./zm/data:/data
+      - ./zm/config:/config
+      - ./zm/log:/log
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 1G
+    env_file:
+      - ./.env
+#    environment:
+#      - ZM_SERVER_HOST=zoneminder1
+
+
+networks:
+  zoneminder:
