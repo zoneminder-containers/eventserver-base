@@ -59,7 +59,13 @@ RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from
     && mkdir -p /zoneminder/defaultconfiges \
     && TARGET_CONFIG=/zoneminder/defaultconfiges \
         MAKE_CONFIG_BACKUP='' \
-        ./install.sh --install-es --no-install-hook --install-config --no-interactive --no-pysudo \
+        ./install.sh \
+            --install-es \
+            --no-install-hook \
+            --install-config \
+            --no-interactive \
+            --no-pysudo \
+            --no-hook-config-upgrade \
     && cp ./hook/config_upgrade.py /zoneminder
 
 # Fix default es config
