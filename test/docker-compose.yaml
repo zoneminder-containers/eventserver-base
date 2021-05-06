@@ -24,6 +24,7 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 9000:9000
     networks:
       - zoneminder
     volumes:

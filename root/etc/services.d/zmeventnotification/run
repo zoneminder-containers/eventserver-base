@@ -8,14 +8,12 @@
 ES_FLAGS="--config /config/zmeventnotification.ini"
 
 if [ "${ES_DEBUG_ENABLED}" -eq "1" ]; then
+  echo "Enabling ES Debug!" | info
   ES_FLAGS="${ES_FLAGS} --debug"
 fi
 
 echo "Waiting for ZoneMinder to start" | info
 /bin/s6-svwait -U /var/run/s6/services/zoneminder
 
-s6-setuidgid www-data \
-  fdmove 2 1 \
-  fdmove -c 1 3 \
-    /usr/bin/zmeventnotification.pl \
-      ${ES_FLAGS}
+/usr/bin/zmeventnotification.pl \
+  ${ES_FLAGS}

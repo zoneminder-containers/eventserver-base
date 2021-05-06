@@ -71,6 +71,7 @@ RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from
 # Fix default es config
 RUN set -x \
     && sed -i "s|^secrets.*=.*$|secrets=/config/secrets.ini|g" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "s|^token_file.*=.*$|token_file=/config/tokens.txt|g" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "s|^console_logs.*=.*$|console_logs=yes|g" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "s|^ES_CERT_FILE=.*$|ES_CERT_FILE=/config/ssl/cert.cer|g" /zoneminder/defaultconfiges/secrets.ini \
     && sed -i "s|^ES_KEY_FILE=.*$|ES_KEY_FILE=/config/ssl/key.pem|g" /zoneminder/defaultconfiges/secrets.ini
