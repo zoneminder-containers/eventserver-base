@@ -15,8 +15,10 @@ services:
       - ./.env
 
   zoneminder:
+    build:
+      context: ..
+      dockerfile: ./Dockerfile
     container_name: zoneminder
-    image: ci:latest
     restart: always
     stop_grace_period: 45s
     depends_on:

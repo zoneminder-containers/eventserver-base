@@ -66,7 +66,7 @@ RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from
             --no-interactive \
             --no-pysudo \
             --no-hook-config-upgrade \
-    && cp ./hook/config_upgrade.py /zoneminder
+    && cp ./tools/config_upgrade.py /zoneminder
 
 # Fix default es config
 RUN set -x \
