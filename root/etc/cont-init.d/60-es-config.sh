@@ -10,8 +10,12 @@ if [ ! -f "/config/zmeventnotification.ini" ]; then
 fi
 
 echo "Setting ES ZoneMinder URL" | info "[${program_name}] "
-sed -i "s|^ZMES_PICTURE_URL=.*$|ZMES_PICTURE_URL=https://${ES_COMMON_NAME}/index.php?view=image\&eid=EVENTID\&fid=objdetect\&width=600|g" /config/secrets.ini
-sed -i "s|^ZM_PORTAL=.*$|ZM_PORTAL=https://${ES_COMMON_NAME}|g" /config/secrets.ini
+fdmove 1 100 \
+  python3 -u /zoneminder/config_edit.py \
+      --config /config/secrets.ini \
+      --set \
+          secrets:ZMES_PICTURE_URL="https://${ES_COMMON_NAME}/index.php?view=image\&eid=EVENTID\&fid=objdetect\&width=600" \
+          secrets:ZM_PORTAL="https://${ES_COMMON_NAME}"
 
 echo "Configuring ZoneMinder Common Name in Nginx Config" | info "[${program_name}] "
 sed -i "s|ES_COMMON_NAME|${ES_COMMON_NAME}|g" /etc/nginx/conf.d/ssl.conf

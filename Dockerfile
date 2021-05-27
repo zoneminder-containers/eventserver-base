@@ -66,15 +66,23 @@ RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from
             --no-interactive \
             --no-pysudo \
             --no-hook-config-upgrade \
-    && cp ./tools/config_upgrade.py /zoneminder
+    && cp ./tools/config_upgrade.py /zoneminder \
+    && cp ./tools/config_edit.py /zoneminder
 
 # Fix default es config
 RUN set -x \
-    && sed -i "s|^secrets.*=.*$|secrets=/config/secrets.ini|g" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "s|^token_file.*=.*$|token_file=/config/tokens.txt|g" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "s|^console_logs.*=.*$|console_logs=yes|g" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "s|^ES_CERT_FILE=.*$|ES_CERT_FILE=/config/ssl/cert.cer|g" /zoneminder/defaultconfiges/secrets.ini \
-    && sed -i "s|^ES_KEY_FILE=.*$|ES_KEY_FILE=/config/ssl/key.pem|g" /zoneminder/defaultconfiges/secrets.ini
+    && pip3 install ConfigUpdater \
+    && python3 -u /zoneminder/config_edit.py \
+        --config /zoneminder/defaultconfiges/zmeventnotification.ini \
+        --set \
+            general:secrets="/config/secrets.ini" \
+            fcm:token_file="/config/tokens.txt" \
+            customize:console_logs="yes" \
+    && python3 -u /zoneminder/config_edit.py \
+        --config /zoneminder/defaultconfiges/secrets.ini \
+        --set \
+            secrets:ES_CERT_FILE="/config/ssl/cert.cer" \
+            secrets:ES_KEY_FILE="/config/ssl/key.pem"
 
 # Copy rootfs
 COPY --from=rootfs-converter /rootfs /
