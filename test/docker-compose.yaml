@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 services:
   db:
@@ -36,7 +36,7 @@ services:
       - type: tmpfs
         target: /dev/shm
         tmpfs:
-          size: 1G
+          size: 1000000000
     env_file:
       - ./.env
 #    environment:
