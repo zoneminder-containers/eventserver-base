@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3'
 
 services:
   db:
@@ -21,6 +21,7 @@ services:
     container_name: zoneminder
     restart: always
     stop_grace_period: 45s
+    shm_size: 1G
     depends_on:
       - db
     ports:
@@ -33,10 +34,10 @@ services:
       - ./zm/data:/data
       - ./zm/config:/config
       - ./zm/log:/log
-      - type: tmpfs
-        target: /dev/shm
-        tmpfs:
-          size: 1000000000
+      # - type: tmpfs
+      #   target: /dev/shm
+      #   tmpfs:
+      #     size: 1000000000
     env_file:
       - ./.env
 #    environment:
