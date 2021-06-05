@@ -81,7 +81,7 @@ RUN set -x \
             customize:console_logs="yes" \
     && python3 -u /zoneminder/config_edit.py \
         --config /zoneminder/defaultconfiges/secrets.ini \
-        --output /zoneminder/defaultconfiges/zmeventnotification.ini \
+        --output /zoneminder/defaultconfiges/secrets.ini \
         --set \
             secrets:ES_CERT_FILE="/config/ssl/cert.cer" \
             secrets:ES_KEY_FILE="/config/ssl/key.pem"
