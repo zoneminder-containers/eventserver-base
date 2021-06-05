@@ -13,6 +13,7 @@ echo "Setting ES ZoneMinder URL" | info "[${program_name}] "
 fdmove 1 100 \
   python3 -u /zoneminder/config_edit.py \
       --config /config/secrets.ini \
+      --output /config/secrets.ini \
       --set \
           secrets:ZMES_PICTURE_URL="https://${ES_COMMON_NAME}/index.php?view=image\&eid=EVENTID\&fid=objdetect\&width=600" \
           secrets:ZM_PORTAL="https://${ES_COMMON_NAME}"

@@ -74,12 +74,14 @@ RUN set -x \
     && pip3 install ConfigUpdater \
     && python3 -u /zoneminder/config_edit.py \
         --config /zoneminder/defaultconfiges/zmeventnotification.ini \
+        --output /zoneminder/defaultconfiges/zmeventnotification.ini \
         --set \
             general:secrets="/config/secrets.ini" \
             fcm:token_file="/config/tokens.txt" \
             customize:console_logs="yes" \
     && python3 -u /zoneminder/config_edit.py \
         --config /zoneminder/defaultconfiges/secrets.ini \
+        --output /zoneminder/defaultconfiges/zmeventnotification.ini \
         --set \
             secrets:ES_CERT_FILE="/config/ssl/cert.cer" \
             secrets:ES_KEY_FILE="/config/ssl/key.pem"
