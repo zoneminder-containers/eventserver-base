@@ -80,6 +80,7 @@ RUN set -x \
             fcm:token_file="/config/tokens.txt" \
             customize:console_logs="yes" \
             network:address="0.0.0.0" \
+            auth:enable="no" \
     && python3 -u /zoneminder/config_edit.py \
         --config /zoneminder/defaultconfiges/secrets.ini \
         --output /zoneminder/defaultconfiges/secrets.ini \
@@ -92,4 +93,5 @@ COPY --from=rootfs-converter /rootfs /
 
 ENV \
     ES_DEBUG_ENABLED=1 \
-    ES_COMMON_NAME=localhost
+    ES_COMMON_NAME=localhost \
+    ES_ENABLE_AUTH=0

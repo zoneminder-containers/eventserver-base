@@ -9,6 +9,8 @@ New environment variables available in addition to zoneminder-base
     - Enables --debug flag for event notification when set to 1
 2. ES_COMMON_NAME
     - Defines common name for accessing zoneminder
+3. ES_ENABLE_AUTH
+    - Controls ES/ZM Authentication
 
 
 # Certificates
