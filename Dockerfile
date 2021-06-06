@@ -79,6 +79,7 @@ RUN set -x \
             general:secrets="/config/secrets.ini" \
             fcm:token_file="/config/tokens.txt" \
             customize:console_logs="yes" \
+            network:address="0.0.0.0" \
     && python3 -u /zoneminder/config_edit.py \
         --config /zoneminder/defaultconfiges/secrets.ini \
         --output /zoneminder/defaultconfiges/secrets.ini \

@@ -1,5 +1,9 @@
 # eventserver-base
 
+<img src="https://img.shields.io/badge/Status-WIP-orange" alt="Status">
+
+# Variables
+
 New environment variables available in addition to zoneminder-base
 1. ES_DEBUG_ENABLED
     - Enables --debug flag for event notification when set to 1
