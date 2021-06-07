@@ -10,9 +10,14 @@ else
   echo "Using existing certificates at ssl..." | info "[${program_name}] "
 fi
 
-if [[ ! -f /config/ssl/dhparam.pem ]]; then
+if [[ ! -f /config/ssl/dhparam.pem ]] && [ "${ES_ENABLE_DHPARAM}" -eq "1" ]; then
   echo "Generating dhparam.pem..." | info "[${program_name}] "
   openssl dhparam -out /config/ssl/dhparam.pem 4096
 else
   echo "Using existing dhparam.pem" | info "[${program_name}] "
+fi
+
+if [ "${ES_ENABLE_DHPARAM}" -eq "1" ] && ! grep -Fxq "ssl_dhparam" /etc/nginx/conf.d/ssl.conf; then
+  echo "Configuring nginx to use dhparam..." | info "[${program_name}] "
+  echo "ssl_dhparam /config/ssl/dhparam.pem;" >> /etc/nginx/conf.d/ssl.conf
 fi

@@ -94,4 +94,5 @@ COPY --from=rootfs-converter /rootfs /
 ENV \
     ES_DEBUG_ENABLED=1 \
     ES_COMMON_NAME=localhost \
-    ES_ENABLE_AUTH=0
+    ES_ENABLE_AUTH=0 \
+    ES_ENABLE_DHPARAM=1
