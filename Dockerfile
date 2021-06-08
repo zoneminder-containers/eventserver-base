@@ -35,6 +35,7 @@ RUN set -x \
 #                                                                   #
 #####################################################################
 FROM ghcr.io/zoneminder-containers/zoneminder-base:${ZM_VERSION}
+ARG ES_VERSION
 
 RUN set -x \
     && apt-get update \
