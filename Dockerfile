@@ -1,22 +1,15 @@
 # syntax=docker/dockerfile:experimental
-ARG ZM_BASE=main
-ARG BETA=1
+ARG ZM_VERSION=main
+ARG ES_VERSION=master
 
 FROM alpine:latest AS eventserverdownloader
-ARG BETA
+ARG ES_VERSION
 WORKDIR /eventserverdownloader
-ENV REPO="pliablepixels/zmeventnotification"
 
-RUN if [ "${BETA}" -eq "0" ]; then \
-        LATEST_VERSION=$(wget --no-check-certificate -qO - https://api.github.com/repos/"${REPO}"/releases/latest | awk '/tag_name/{print $4;exit}' FS='[""]'); \
-        URL="https://github.com/"${REPO}"/archive/refs/tags/${LATEST_VERSION}.tar.gz"; \
-    else \
-        URL="https://github.com/pliablepixels/zmeventnotification/archive/refs/heads/master.tar.gz"; \
-    fi \
-    && wget -O /tmp/eventserver.tar.gz "${URL}" \
-    && mkdir -p /tmp/eventserver \
-    && tar zxvf /tmp/eventserver.tar.gz --strip 1 -C /tmp/eventserver \
-    && cp -r /tmp/eventserver/* .
+RUN set -x \
+    && apk add git
+    && git clone https://github.com/pliablepixels/zmeventnotification.git . \
+    && git checkout ${ES_VERSION}
 
 #####################################################################
 #                                                                   #
@@ -35,7 +28,13 @@ COPY root .
 RUN set -x \
     && find . -type f -print0 | xargs -0 -n 1 -P 4 dos2unix
 
-FROM ghcr.io/zoneminder-containers/zoneminder-base:${ZM_BASE}
+#####################################################################
+#                                                                   #
+# Install ES                                                        #
+# Apply changes to default ES config                                #
+#                                                                   #
+#####################################################################
+FROM ghcr.io/zoneminder-containers/zoneminder-base:${ZM_VERSION}
 
 RUN set -x \
     && apt-get update \
@@ -66,13 +65,12 @@ RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from
             --no-interactive \
             --no-pysudo \
             --no-hook-config-upgrade \
-    && cp ./tools/config_upgrade.py /zoneminder \
-    && cp ./tools/config_edit.py /zoneminder
+    && cp ./tools/* /zoneminder/estools
 
 # Fix default es config
 RUN set -x \
     && pip3 install ConfigUpdater \
-    && python3 -u /zoneminder/config_edit.py \
+    && python3 -u /zoneminder/estools/config_edit.py \
         --config /zoneminder/defaultconfiges/zmeventnotification.ini \
         --output /zoneminder/defaultconfiges/zmeventnotification.ini \
         --set \
@@ -81,7 +79,7 @@ RUN set -x \
             customize:console_logs="yes" \
             network:address="0.0.0.0" \
             auth:enable="no" \
-    && python3 -u /zoneminder/config_edit.py \
+    && python3 -u /zoneminder/estools/config_edit.py \
         --config /zoneminder/defaultconfiges/secrets.ini \
         --output /zoneminder/defaultconfiges/secrets.ini \
         --set \
@@ -96,3 +94,6 @@ ENV \
     ES_COMMON_NAME=localhost \
     ES_ENABLE_AUTH=0 \
     ES_ENABLE_DHPARAM=1
+
+LABEL \
+    com.github.alexyao2015.es_version=${ES_VERSION}
