@@ -17,25 +17,28 @@ jobs:
       - name: Set ES Build Version
         id: set-version
         run: |
-          if [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
-            # Build tag/release version
-            ES_VERSION=$(wget \
-              -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
-              | awk '/tag_name/{print $4;exit}' FS='[""]')
+          if [[ ${GITHUB_REF} == refs/tags/* ]]; then
+            NEW_VERSION=${GITHUB_REF##*/}
+            ES_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=zm_)(.*)(?=-)")
+            ZM_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=es_)(.*)($)")
           else
-            # Build from latest ES commit
-            ES_VERSION=$(wget \
-              -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/commits/master \
-              | awk '/sha/{print $4;exit}' FS='[""]')
+            if [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
+              # Build tag/release version
+              ES_VERSION=$(wget \
+                -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
+                | awk '/tag_name/{print $4;exit}' FS='[""]')
+              ZM_VERSION=${{ github.event.client_payload.zm_version }}
+            else
+              # Build from latest ES commit
+              ES_VERSION=$(wget \
+                -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/commits/master \
+                | awk '/sha/{print $4;exit}' FS='[""]')
+              ZM_VERSION="main"
+            fi
           fi
-          if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
-            ZM_VERSION=${{ github.event.client_payload.zm_version }}
-          else
-            ZM_VERSION="main"
-          fi
-          echo Building with ZM ${ZM_VERSION}
+          echo Building with ZM "${ZM_VERSION}"
           echo "::set-output name=zm_version::${ZM_VERSION}"
-          echo Building with ES ${ES_VERSION}
+          echo Building with ES "${ES_VERSION}"
           echo "::set-output name=es_version::${ES_VERSION}"
 
   build:
@@ -209,9 +212,9 @@ jobs:
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ needs.getversion.outputs.zm_version }}
+          tag_name: zm_${{ needs.getversion.outputs.zm_version }}-es_${{ needs.getversion.outputs.es_version }}
           files: ci-*/ci-*.tar.gz
-          body: Automated release of ZoneMinder v${{ needs.getversion.outputs.zm_version }} with event server v${{ needs.getversion.outputs.es_version }}
+          body: Automated release of ZoneMinder ${{ needs.getversion.outputs.zm_version }} with event server ${{ needs.getversion.outputs.es_version }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

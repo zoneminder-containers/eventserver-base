@@ -1,0 +1,36 @@
+name: Update ZoneMinder Version
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Update ZoneMinder Version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update
+        id: update
+        run: |
+          set -x
+          zm_version=$(wget \
+            --no-check-certificate -qO - \
+            https://api.github.com/repos/zoneminder-containers/eventserver-base/releases/latest \
+            | awk '/tag_name/{print $4;exit}' FS='[""]' \
+            | grep -Po "(?<=es_)(.*)($)")
+          es_version=$(wget \
+            --no-check-certificate -qO - \
+            https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
+            | awk '/tag_name/{print $4;exit}' FS='[""]')
+          export VERSION="zm_${zm_version}-es_${es_version}"
+          echo "::set-output name=version::${VERSION}"
+      - name: Push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v5.3
+        with:
+          custom_tag: ${{ steps.update.outputs.version }}
+          tag_prefix: ''
+          # Custom PAT required to trigger build workflow
+          github_token: ${{ secrets.GHCR_PAT }}
