@@ -85,6 +85,7 @@ jobs:
           key: ${{ matrix.arch }}-${{ env.ZM_VERSION }}-${{ env.ES_VERSION }}-${{ github.sha }}
           restore-keys: |
             ${{ matrix.arch }}-${{ env.ZM_VERSION }}-${{ env.ES_VERSION }}-
+            ${{ matrix.arch }}-${{ env.ZM_VERSION }}-
 
       - name: Build ZoneMinder
         run: |
