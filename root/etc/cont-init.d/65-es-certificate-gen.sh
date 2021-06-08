@@ -17,9 +17,12 @@ if [ "${ES_ENABLE_DHPARAM}" -eq "1" ]; then
   else
     echo "Using existing dhparam.pem" | info "[${program_name}] "
   fi
-  if ! grep -Fxq "ssl_dhparam" /etc/nginx/conf.d/ssl.conf; then
+  if ! grep -Fq "ssl_dhparam" /etc/nginx/conf.d/ssl.conf; then
     echo "Configuring nginx to use dhparam..." | info "[${program_name}] "
     echo "ssl_dhparam /config/ssl/dhparam.pem;" >> /etc/nginx/conf.d/ssl.conf
+    echo "" >> /etc/nginx/conf.d/ssl.conf
+  else
+    echo "Skipping nginx dhparam configuration because it already exists..." | info "[${program_name}] "
   fi
 else
   echo "Skipping dhparam setup because ES_ENABLE_DHPARAM is ${ES_ENABLE_DHPARAM}"
