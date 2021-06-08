@@ -203,7 +203,7 @@ jobs:
       - getversion
       - test
     name: Upload Release Asset
-    if: ${{ github.event.client_payload.tagged }}
+    if: github.event.client_payload.tagged == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Download container artifact
