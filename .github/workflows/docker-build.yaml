@@ -159,7 +159,7 @@ jobs:
         timeout-minutes: 5
         run: |
           set -x
-          cd test
+          cd testautomated
           docker-compose up &
           sleep 60
           if [ ! "$(docker ps -q -f name=zoneminder)" ]; then
@@ -175,7 +175,7 @@ jobs:
         timeout-minutes: 5
         run: |
           set -x
-          cd test
+          cd testautomated
           docker-compose up &
           sleep 60
           docker stop zoneminder
@@ -186,7 +186,7 @@ jobs:
         timeout-minutes: 5
         run: |
           set -x
-          cd test
+          cd testautomated
           docker-compose up &
           sleep 120
           docker stop db
@@ -312,13 +312,13 @@ jobs:
             url: "https://index.docker.io/v1/",
             username: DOCKER_USERNAME,
             password: DOCKER_PASSWORD,
-            repo: yaoa/zoneminder-base
+            repo: yaoa/eventserver-base
           }
           - {
             url: ghcr.io/zoneminder-containers,
             username: GCHR_USERNAME,
             password: GHCR_PAT,
-            repo: ghcr.io/zoneminder-containers/zoneminder-base
+            repo: ghcr.io/zoneminder-containers/eventserver-base
           }
     steps:
       - name: Docker login
@@ -434,13 +434,13 @@ jobs:
             url: "https://index.docker.io/v1/",
             username: DOCKER_USERNAME,
             password: DOCKER_PASSWORD,
-            repo: yaoa/zoneminder-base
+            repo: yaoa/eventserver-base
           }
           - {
             url: ghcr.io/zoneminder-containers,
             username: GCHR_USERNAME,
             password: GHCR_PAT,
-            repo: ghcr.io/zoneminder-containers/zoneminder-base
+            repo: ghcr.io/zoneminder-containers/eventserver-base
           }
         images:
           - {

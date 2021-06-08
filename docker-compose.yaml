@@ -15,10 +15,8 @@ services:
       - ../.env
 
   zoneminder:
-    build:
-      context: ..
-      dockerfile: ./Dockerfile
     container_name: zoneminder
+    image: ghcr.io/zoneminder-containers/eventserver-base:latest
     restart: always
     stop_grace_period: 45s
     depends_on:
