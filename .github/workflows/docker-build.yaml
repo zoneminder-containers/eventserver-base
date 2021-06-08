@@ -31,7 +31,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
             ZM_VERSION=${{ github.event.client_payload.zm_version }}
           else
-            ZM_VERSION="master"
+            ZM_VERSION="main"
           fi
           echo Building with ZM ${ZM_VERSION}
           echo "::set-output name=zm_version::${ZM_VERSION}"
