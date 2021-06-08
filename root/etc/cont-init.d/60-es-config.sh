@@ -9,19 +9,26 @@ if [ ! -f "/config/zmeventnotification.ini" ]; then
     cp -r /zoneminder/defaultconfiges/* /config
 fi
 
-echo "Setting ES ZoneMinder URL and Auth settings..." | info "[${program_name}] "
+echo "Setting ES ZoneMinder URL settings..." | info "[${program_name}] "
+
+python3 -u /zoneminder/estools/config_edit.py \
+    --config /config/secrets.ini \
+    --output /config/secrets.ini \
+    --set \
+        secrets:ZMES_PICTURE_URL="https://${ES_COMMON_NAME}/index.php?view=image\&eid=EVENTID\&fid=objdetect\&width=600" \
+        secrets:ZM_PORTAL="https://${ES_COMMON_NAME}"
+
+echo "Setting ES ZoneMinder Auth settings..." | info "[${program_name}] "
 enable_auth="no"
 if [ "${ES_ENABLE_AUTH}" -eq "1" ]; then
   enable_auth="yes"
 fi
 
-python3 -u /zoneminder/config_edit.py \
-    --config /config/secrets.ini \
-    --output /config/secrets.ini \
-    --set \
-        secrets:ZMES_PICTURE_URL="https://${ES_COMMON_NAME}/index.php?view=image\&eid=EVENTID\&fid=objdetect\&width=600" \
-        secrets:ZM_PORTAL="https://${ES_COMMON_NAME}" \
-        auth:enable="${enable_auth}"
+python3 -u /zoneminder/estools/config_edit.py \
+        --config /zoneminder/defaultconfiges/zmeventnotification.ini \
+        --output /zoneminder/defaultconfiges/zmeventnotification.ini \
+        --set \
+          auth:enable="${enable_auth}"
 
 echo "Configuring ZoneMinder Common Name in Nginx Config" | info "[${program_name}] "
 sed -i "s|ES_COMMON_NAME|${ES_COMMON_NAME}|g" /etc/nginx/conf.d/ssl.conf
