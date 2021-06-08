@@ -159,7 +159,7 @@ jobs:
         timeout-minutes: 5
         run: |
           set -x
-          cd testautomated
+          cd testsautomated
           docker-compose up &
           sleep 60
           if [ ! "$(docker ps -q -f name=zoneminder)" ]; then
@@ -175,7 +175,7 @@ jobs:
         timeout-minutes: 5
         run: |
           set -x
-          cd testautomated
+          cd testsautomated
           docker-compose up &
           sleep 60
           docker stop zoneminder
@@ -186,7 +186,7 @@ jobs:
         timeout-minutes: 5
         run: |
           set -x
-          cd testautomated
+          cd testsautomated
           docker-compose up &
           sleep 120
           docker stop db
