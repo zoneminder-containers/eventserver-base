@@ -199,7 +199,7 @@ jobs:
       - getversion
       - test
     name: Upload Release Asset
-    if: ${{ startsWith(github.ref, 'refs/tags/') }}
+    if: ${{ github.event.client_payload.tagged }}
     runs-on: ubuntu-latest
     steps:
       - name: Download container artifact
@@ -208,8 +208,9 @@ jobs:
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v${{ needs.getversion.outputs.zm_version }}
           files: ci-*/ci-*.tar.gz
-          body: Automated release of ZoneMinder v${{ needs.getversion.outputs.zm_version }} with event server v${{ needs.getversion.outputs.zm_version }}
+          body: Automated release of ZoneMinder v${{ needs.getversion.outputs.zm_version }} with event server v${{ needs.getversion.outputs.es_version }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
