@@ -65,6 +65,7 @@ RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from
             --no-interactive \
             --no-pysudo \
             --no-hook-config-upgrade \
+    && mkdir -p /zoneminder/estools \
     && cp ./tools/* /zoneminder/estools
 
 # Fix default es config
