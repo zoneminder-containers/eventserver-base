@@ -16,7 +16,7 @@ jobs:
       - name: Set ES Build Version
         id: set-version
         run: |
-          if [[ ${{ github.event_name }} == "repository_dispatch" ]] \
+          if [[ "${{ github.event_name }}" == "repository_dispatch" ]] \
             && [[ ${{ github.event.client_payload.tagged }} == "true" ]]; then
             # Build tag/release version
             ES_VERSION=$(wget \
