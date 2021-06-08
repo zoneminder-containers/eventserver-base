@@ -156,12 +156,12 @@ jobs:
 
       # Fails if zoneminder is not up
       - name: Start image twice
-        timeout-minutes: 10
+        timeout-minutes: 5
         run: |
           set -x
           cd testsautomated
           docker-compose up &
-          sleep 300
+          sleep 60
           if [ ! "$(docker ps -q -f name=zoneminder)" ]; then
               exit 1
           fi
