@@ -16,8 +16,7 @@ jobs:
       - name: Set ES Build Version
         id: set-version
         run: |
-          if [[ "${{ github.event_name }}" == "repository_dispatch" ]] \
-            && [[ ${{ github.event.client_payload.tagged }} == "true" ]]; then
+          if [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
             # Build tag/release version
             ES_VERSION=$(wget \
               -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
@@ -34,6 +33,8 @@ jobs:
   build:
     name: Build Docker Image
     runs-on: ubuntu-latest
+    needs:
+      - getversion
     env:
       ES_VERSION: ${{ needs.getversion.outputs.es_version }}
       ZM_VERSION: ${{ github.event.client_payload.zm_version }}
