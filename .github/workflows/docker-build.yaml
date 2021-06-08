@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Obtain ES Version
     outputs:
+      zm_version: ${{ steps.set-version.outputs.zm_version }}
       es_version: ${{ steps.set-version.outputs.es_version }}
     steps:
     # Only build latest tagged if release version
@@ -27,6 +28,13 @@ jobs:
               -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/commits/master \
               | awk '/sha/{print $4;exit}' FS='[""]')
           fi
+          if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
+            ZM_VERSION=${{ github.event.client_payload.zm_version }}
+          else
+            ZM_VERSION="master"
+          fi
+          echo Building with ZM ${ZM_VERSION}
+          echo "::set-output name=zm_version::${ZM_VERSION}"
           echo Building with ES ${ES_VERSION}
           echo "::set-output name=es_version::${ES_VERSION}"
 
@@ -36,8 +44,8 @@ jobs:
     needs:
       - getversion
     env:
+      ZM_VERSION: ${{ needs.getversion.outputs.zm_version }}
       ES_VERSION: ${{ needs.getversion.outputs.es_version }}
-      ZM_VERSION: ${{ github.event.client_payload.zm_version }}
     strategy:
       matrix:
         include:
@@ -201,7 +209,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ci-*/ci-*.tar.gz
-          body: Automated release of ZoneMinder v${{ github.event.client_payload.zm_version }} with event server v${{ needs.getversion.outputs.zm_version }}
+          body: Automated release of ZoneMinder v${{ needs.getversion.outputs.zm_version }} with event server v${{ needs.getversion.outputs.zm_version }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -213,8 +221,8 @@ jobs:
       - getversion
       - test
     env:
+      ZM_VERSION: ${{ needs.getversion.outputs.zm_version }}
       ES_VERSION: ${{ needs.getversion.outputs.es_version }}
-      ZM_VERSION: ${{ needs.getversion.outputs.build-version }}
     strategy:
       matrix:
         arch:
@@ -292,8 +300,8 @@ jobs:
       - getversion
       - publish
     env:
+      ZM_VERSION: ${{ needs.getversion.outputs.zm_version }}
       ES_VERSION: ${{ needs.getversion.outputs.es_version }}
-      ZM_VERSION: ${{ needs.getversion.outputs.build-version }}
       DOCKER_CLI_EXPERIMENTAL: "enabled"
     strategy:
       matrix:
@@ -414,8 +422,8 @@ jobs:
       - getversion
       - create_manifest
     env:
+      ZM_VERSION: ${{ needs.getversion.outputs.zm_version }}
       ES_VERSION: ${{ needs.getversion.outputs.es_version }}
-      ZM_VERSION: ${{ needs.getversion.outputs.build-version }}
       DOCKER_CLI_EXPERIMENTAL: "enabled"
     strategy:
       matrix:
