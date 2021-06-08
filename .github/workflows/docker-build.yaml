@@ -19,7 +19,7 @@ jobs:
         run: |
           if [[ ${GITHUB_REF} == refs/tags/* ]]; then
             NEW_VERSION=${GITHUB_REF##*/}
-            ES_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=zm_)(.*)(?=-)")
+            ES_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=zm_v)(.*)(?=-)")
             ZM_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=es_)(.*)($)")
           else
             if [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
@@ -212,9 +212,9 @@ jobs:
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: zm_${{ needs.getversion.outputs.zm_version }}-es_${{ needs.getversion.outputs.es_version }}
+          tag_name: zm_v${{ needs.getversion.outputs.zm_version }}-es_${{ needs.getversion.outputs.es_version }}
           files: ci-*/ci-*.tar.gz
-          body: Automated release of ZoneMinder ${{ needs.getversion.outputs.zm_version }} with event server ${{ needs.getversion.outputs.es_version }}
+          body: Automated release of ZoneMinder v${{ needs.getversion.outputs.zm_version }} with event server ${{ needs.getversion.outputs.es_version }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

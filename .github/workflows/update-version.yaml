@@ -24,7 +24,7 @@ jobs:
             --no-check-certificate -qO - \
             https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
             | awk '/tag_name/{print $4;exit}' FS='[""]')
-          export VERSION="zm_${zm_version}-es_${es_version}"
+          export VERSION="zm_v${zm_version}-es_${es_version}"
           echo "::set-output name=version::${VERSION}"
       - name: Push tag
         id: tag_version
