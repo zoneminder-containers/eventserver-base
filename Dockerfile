@@ -7,7 +7,7 @@ ARG ES_VERSION
 WORKDIR /eventserverdownloader
 
 RUN set -x \
-    && apk add git
+    && apk add git \
     && git clone https://github.com/pliablepixels/zmeventnotification.git . \
     && git checkout ${ES_VERSION}
 
