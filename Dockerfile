@@ -2,6 +2,11 @@
 ARG ZM_VERSION=main
 ARG ES_VERSION=master
 
+#####################################################################
+#                                                                   #
+# Download ES                                                       #
+#                                                                   #
+#####################################################################
 FROM alpine:latest AS eventserverdownloader
 ARG ES_VERSION
 WORKDIR /eventserverdownloader
