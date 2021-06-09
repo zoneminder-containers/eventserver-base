@@ -81,6 +81,7 @@ RUN set -x \
             customize:console_logs="yes" \
             network:address="0.0.0.0" \
             auth:enable="no" \
+            customize:use_hooks="no" \
     && python3 -u /zoneminder/estools/config_edit.py \
         --config /zoneminder/defaultconfiges/secrets.ini \
         --output /zoneminder/defaultconfiges/secrets.ini \
