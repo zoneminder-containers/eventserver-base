@@ -1,6 +1,8 @@
 # eventserver-base
 
-<img src="https://img.shields.io/badge/Status-WIP-orange" alt="Status">
+[![Docker Build](https://github.com/zoneminder-containers/eventserver-base/actions/workflows/docker-build.yaml/badge.svg)](https://github.com/zoneminder-containers/eventserver-base/actions/workflows/docker-build.yaml)
+[![DockerHub Pulls](https://img.shields.io/docker/pulls/yaoa/eventserver-base.svg)](https://hub.docker.com/r/yaoa/eventserver-base)
+[![Status](https://img.shields.io/badge/Status-WIP-orange)]()
 
 # Variables
 
