@@ -17,7 +17,7 @@ jobs:
           set -x
           zm_version=$(wget \
             --no-check-certificate -qO - \
-            https://api.github.com/repos/zoneminder-containers/eventserver-base/releases/latest \
+            https://api.github.com/repos/zoneminder-containers/zoneminder-base/releases/latest \
             | awk '/tag_name/{print $4;exit}' FS='[""]' \
             | grep -Po "(?<=es_)(.*)($)")
           es_version=$(wget \
