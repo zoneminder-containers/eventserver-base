@@ -42,7 +42,6 @@ RUN set -x \
     && apt-get install -y \
         build-essential \
         libjson-perl \
-        python3-pip \
     && PERL_MM_USE_DEFAULT=1 \
     && yes | perl -MCPAN -e "install Net::WebSocket::Server" \
     && yes | perl -MCPAN -e "install LWP::Protocol::https" \
@@ -70,24 +69,19 @@ RUN --mount=type=bind,target=/tmp/eventserver,source=/eventserverdownloader,from
     && cp ./tools/* /zoneminder/estools
 
 # Fix default es config
+# https://stackoverflow.com/a/16987794
 RUN set -x \
-    && pip3 install ConfigUpdater \
-    && python3 -u /zoneminder/estools/config_edit.py \
-        --config /zoneminder/defaultconfiges/zmeventnotification.ini \
-        --output /zoneminder/defaultconfiges/zmeventnotification.ini \
-        --set \
-            general:secrets="/config/secrets.ini" \
-            fcm:token_file="/config/tokens.txt" \
-            customize:console_logs="yes" \
-            network:address="0.0.0.0" \
-            auth:enable="no" \
-            customize:use_hooks="no" \
-    && python3 -u /zoneminder/estools/config_edit.py \
-        --config /zoneminder/defaultconfiges/secrets.ini \
-        --output /zoneminder/defaultconfiges/secrets.ini \
-        --set \
-            secrets:ES_CERT_FILE="/config/ssl/cert.cer" \
-            secrets:ES_KEY_FILE="/config/ssl/key.pem"
+    && sed -i "/^\[general\]$/,/^\[/ s|^secrets.*=.*|secrets=/config/secrets.ini|" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "/^\[fcm\]$/,/^\[/ s|^token_file.*=.*|token_file=/config/tokens.txt|" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "/^\[customize\]$/,/^\[/ s|^console_logs.*=.*|console_logs=yes|" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "/^\[network\]$/,/^\[/ s|^address.*=.*|address=0.0.0.0|" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=no|" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "/^\[customize\]$/,/^\[/ s|^use_hooks.*=.*|use_hooks=no|" /zoneminder/defaultconfiges/zmeventnotification.ini
+
+# Fix default es secrets
+RUN set -x \
+    && sed -i "/^\[secrets\]$/,/^\[/ s|^ES_CERT_FILE.*=.*|ES_CERT_FILE=/config/ssl/cert.cer|" /zoneminder/defaultconfiges/secrets.ini \
+    && sed -i "/^\[secrets\]$/,/^\[/ s|^ES_KEY_FILE.*=.*|ES_KEY_FILE=/config/ssl/key.pem|" /zoneminder/defaultconfiges/secrets.ini
 
 # Copy rootfs
 COPY --from=rootfs-converter /rootfs /
