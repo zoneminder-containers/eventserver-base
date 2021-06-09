@@ -25,8 +25,8 @@ if [ "${ES_ENABLE_AUTH}" -eq "1" ]; then
 fi
 
 python3 -u /zoneminder/estools/config_edit.py \
-        --config /zoneminder/defaultconfiges/zmeventnotification.ini \
-        --output /zoneminder/defaultconfiges/zmeventnotification.ini \
+        --config /config/zmeventnotification.ini \
+        --output /config/zmeventnotification.ini \
         --set \
           auth:enable="${enable_auth}"
 
