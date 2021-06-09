@@ -74,9 +74,9 @@ RUN set -x \
     && sed -i "/^\[general\]$/,/^\[/ s|^secrets.*=.*|secrets=/config/secrets.ini|" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "/^\[fcm\]$/,/^\[/ s|^token_file.*=.*|token_file=/config/tokens.txt|" /zoneminder/defaultconfiges/zmeventnotification.ini \
     && sed -i "/^\[customize\]$/,/^\[/ s|^console_logs.*=.*|console_logs=yes|" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "/^\[network\]$/,/^\[/ s|^address.*=.*|address=0.0.0.0|" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=no|" /zoneminder/defaultconfiges/zmeventnotification.ini \
-    && sed -i "/^\[customize\]$/,/^\[/ s|^use_hooks.*=.*|use_hooks=no|" /zoneminder/defaultconfiges/zmeventnotification.ini
+    && sed -i "/^\[customize\]$/,/^\[/ s|^use_hooks.*=.*|use_hooks=no|" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "/^\[network\]$/,/^\[/ s|^.*address.*=.*|address=0.0.0.0|" /zoneminder/defaultconfiges/zmeventnotification.ini \
+    && sed -i "/^\[auth\]$/,/^\[/ s|^enable.*=.*|enable=no|" /zoneminder/defaultconfiges/zmeventnotification.ini
 
 # Fix default es secrets
 RUN set -x \
