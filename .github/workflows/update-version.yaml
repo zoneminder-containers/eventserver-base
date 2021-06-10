@@ -18,8 +18,7 @@ jobs:
           zm_version=$(wget \
             --no-check-certificate -qO - \
             https://api.github.com/repos/zoneminder-containers/zoneminder-base/releases/latest \
-            | awk '/tag_name/{print $4;exit}' FS='[""]' \
-            | grep -Po "(?<=es_)(.*)($)")
+            | awk '/tag_name/{print $4;exit}' FS='[""]'
           es_version=$(wget \
             --no-check-certificate -qO - \
             https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
