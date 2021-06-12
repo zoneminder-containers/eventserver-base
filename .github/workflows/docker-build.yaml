@@ -19,8 +19,8 @@ jobs:
         run: |
           if [[ ${GITHUB_REF} == refs/tags/* ]]; then
             NEW_VERSION=${GITHUB_REF##*/}
-            ES_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=zm_v)(.*)(?=-)")
-            ZM_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=es_)(.*)($)")
+            ZM_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=zm_v)(.*)(?=-)")
+            ES_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=es_)(.*)($)")
           else
             if [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
               # Build tag/release version
