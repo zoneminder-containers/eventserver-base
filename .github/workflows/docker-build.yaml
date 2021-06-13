@@ -21,25 +21,22 @@ jobs:
             NEW_VERSION=${GITHUB_REF##*/}
             ZM_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=zm_v)(.*)(?=-)")
             ES_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=es_)(.*)($)")
-          else
-            if [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
+          elif [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
               # Build tag/release version
               ES_VERSION=$(wget \
                 -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
                 | awk '/tag_name/{print $4;exit}' FS='[""]')
               ZM_VERSION=${{ github.event.client_payload.zm_version }}
-            else
-              # Build from latest ES commit
-              ES_VERSION=$(wget \
-                -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/commits/master \
-                | awk '/sha/{print $4;exit}' FS='[""]')
-              ZM_VERSION="main"
-            fi
+          else
+            # Build from latest ES commit
+            ES_VERSION=$(wget \
+              -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/commits/master \
+              | awk '/sha/{print $4;exit}' FS='[""]')
+            ZM_VERSION="main"
           fi
-          echo Building with ZM "${ZM_VERSION}"
           echo "::set-output name=zm_version::${ZM_VERSION}"
-          echo Building with ES "${ES_VERSION}"
           echo "::set-output name=es_version::${ES_VERSION}"
+          echo Building with ZM "${ZM_VERSION}" and ES "${ES_VERSION}"
 
   build:
     name: Build Docker Image
@@ -203,7 +200,7 @@ jobs:
       - getversion
       - test
     name: Upload Release Asset
-    if: github.event.client_payload.tagged == 'true'
+    if: ${{ github.event.client_payload.tagged == 'true' || startsWith(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
     steps:
       - name: Download container artifact
