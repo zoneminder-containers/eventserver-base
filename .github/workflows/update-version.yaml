@@ -1,6 +1,7 @@
 name: Update ZoneMinder Version
 
 on:
+  push:
   schedule:
     - cron: '0 0 * * *'
 
@@ -27,9 +28,15 @@ jobs:
           echo "::set-output name=version::${VERSION}"
       - name: Push tag
         id: tag_version
-        uses: mathieudutour/github-tag-action@v5.5
-        with:
-          custom_tag: ${{ steps.update.outputs.version }}
-          tag_prefix: ''
-          # Custom PAT required to trigger build workflow
-          github_token: ${{ secrets.GHCR_PAT }}
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config user.password "${{ secrets.GHCR_PAT }}"
+          git fetch --tags
+          if [ $(git tag -l "${{ steps.update.outputs.version }}") ]; then
+            echo "Tag ${{ steps.update.outputs.version }} already exists! Skipping tag creation."
+          else
+            echo "Creating tag ${{ steps.update.outputs.version }}"
+            git tag -l "${{ steps.update.outputs.version }}"
+            git push origin "${{ steps.update.outputs.version }}"
+          fi
