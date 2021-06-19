@@ -13,6 +13,8 @@ New environment variables available in addition to zoneminder-base
     - Defines common name for accessing zoneminder
 3. ES_ENABLE_AUTH
     - Controls ES/ZM Authentication
+4. USE_SECURE_RANDOM_ORG
+    - Use random.org for api random string generation. Otherwise uses bash random.
 
 
 # Certificates
