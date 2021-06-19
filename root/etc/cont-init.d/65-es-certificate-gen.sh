@@ -10,7 +10,7 @@ else
   echo "Using existing certificates at ssl..." | info "[${program_name}] "
 fi
 
-if [ "${ES_ENABLE_DHPARAM}" -eq "1" ]; then
+if [ "${ES_ENABLE_DHPARAM}" -eq 1 ]; then
   if [[ ! -f /config/ssl/dhparam.pem ]]; then
     echo "Generating dhparam.pem..." | info "[${program_name}] "
     openssl dhparam -out /config/ssl/dhparam.pem 4096

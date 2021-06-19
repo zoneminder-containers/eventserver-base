@@ -16,7 +16,7 @@ sed -i "/^\[secrets\]$/,/^\[/ s|^ZM_PORTAL.*=.*|ZM_PORTAL=https://${ES_COMMON_NA
 
 echo "Setting ES ZoneMinder Auth settings..." | info "[${program_name}] "
 enable_auth="no"
-if [ "${ES_ENABLE_AUTH}" -eq "1" ]; then
+if [ "${ES_ENABLE_AUTH}" -eq 1 ]; then
   enable_auth="yes"
 fi
 

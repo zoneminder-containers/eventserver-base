@@ -7,7 +7,7 @@
 
 ES_FLAGS="--config /config/zmeventnotification.ini"
 
-if [ "${ES_DEBUG_ENABLED}" -eq "1" ]; then
+if [ "${ES_DEBUG_ENABLED}" -eq 1 ]; then
   echo "Enabling ES Debug!" | info
   ES_FLAGS="${ES_FLAGS} --debug"
 fi

@@ -16,7 +16,7 @@ if [ "$(mysql -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" -h"${MYSQL_HOST}" zm \
   insert_command+="UPDATE Config SET Value = 'hashed' WHERE Name = 'ZM_AUTH_RELAY';"
   insert_command+="UPDATE Config SET Value = 0 WHERE Name = 'ZM_AUTH_HASH_IPS';"
 
-  if [ "${USE_SECURE_RANDOM_ORG}" -eq "1" ]; then
+  if [ "${USE_SECURE_RANDOM_ORG}" -eq 1 ]; then
     echo "Fetching random secure string for ZoneMinder API from random.org..." | init
     random_string=$(
       wget -qO - \
