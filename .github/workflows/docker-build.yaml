@@ -17,6 +17,7 @@ jobs:
       - name: Set ES Build Version
         id: set-version
         run: |
+          set -x
           if [[ ${GITHUB_REF} == refs/tags/* ]]; then
             NEW_VERSION=${GITHUB_REF##*/}
             ZM_VERSION=$(echo "${NEW_VERSION}" | grep -Po "(?<=zm_v)(.*)(?=-)")
@@ -151,6 +152,7 @@ jobs:
 
       - name: Import image
         run: |
+          set -x
           docker load --input ci-${{ matrix.arch }}-${{ github.run_number }}.tar.gz
           docker tag ci:${{ github.run_number }} ci:latest
 
@@ -223,8 +225,8 @@ jobs:
       - getversion
       - test
     env:
-      ZM_VERSION: ${{ needs.getversion.outputs.zm_version }}
-      ES_VERSION: ${{ needs.getversion.outputs.es_version }}
+      ZM_VERSION: zm_v${{ needs.getversion.outputs.zm_version }}
+      ES_VERSION: es_${{ needs.getversion.outputs.es_version }}
     strategy:
       matrix:
         arch:
@@ -281,6 +283,14 @@ jobs:
           docker push ${{ matrix.registry.repo }}:${{ matrix.arch }}-latest
           echo ${{ matrix.registry.repo }}:${{ matrix.arch }}-latest published
 
+      - name: Deploy Latest Release (arch-zm_sha-es_sha)
+        if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          set -x
+          docker tag ci:${{ github.run_number }} ${{ matrix.registry.repo }}:${{ matrix.arch }}-${ZM_VERSION}-${ES_VERSION}
+          docker push ${{ matrix.registry.repo }}:${{ matrix.arch }}-${ZM_VERSION}-${ES_VERSION}
+          echo ${{ matrix.registry.repo }}:${{ matrix.arch }}-${ZM_VERSION}-${ES_VERSION} published
+
       - name: Deploy Ref (arch-ref)
         run: |
           set -x
@@ -302,8 +312,8 @@ jobs:
       - getversion
       - publish
     env:
-      ZM_VERSION: ${{ needs.getversion.outputs.zm_version }}
-      ES_VERSION: ${{ needs.getversion.outputs.es_version }}
+      ZM_VERSION: zm_v${{ needs.getversion.outputs.zm_version }}
+      ES_VERSION: es_${{ needs.getversion.outputs.es_version }}
       DOCKER_CLI_EXPERIMENTAL: "enabled"
     strategy:
       matrix:
@@ -379,6 +389,25 @@ jobs:
 
           docker manifest push ${{ matrix.registry.repo }}:latest
           echo ${{ matrix.registry.repo }}:latest published
+
+      - name: Deploy Latest Release (zm_sha-es_sha)
+        if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          set -x
+          docker manifest create \
+            ${{ matrix.registry.repo }}:${ZM_VERSION}-${ES_VERSION} \
+            ${{ matrix.registry.repo }}:i386-${{ github.run_number }} \
+            ${{ matrix.registry.repo }}:amd64-${{ github.run_number }} \
+            ${{ matrix.registry.repo }}:armv7-${{ github.run_number }} \
+            ${{ matrix.registry.repo }}:arm64-${{ github.run_number }}
+
+          docker manifest annotate ${{ matrix.registry.repo }}:${ZM_VERSION}-${ES_VERSION} \
+            ${{ matrix.registry.repo }}:armv7-${{ github.run_number }} --arch arm --variant v7
+          docker manifest annotate ${{ matrix.registry.repo }}:${ZM_VERSION}-${ES_VERSION} \
+            ${{ matrix.registry.repo }}:arm64-${{ github.run_number }} --arch arm64 --variant v8
+
+          docker manifest push ${{ matrix.registry.repo }}:${ZM_VERSION}-${ES_VERSION}
+          echo ${{ matrix.registry.repo }}:${ZM_VERSION}-${ES_VERSION} published
 
       - name: Deploy Ref (ref)
         run: |
