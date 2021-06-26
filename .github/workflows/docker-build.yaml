@@ -453,8 +453,8 @@ jobs:
       - getversion
       - create_manifest
     env:
-      ZM_VERSION: ${{ needs.getversion.outputs.zm_version }}
-      ES_VERSION: ${{ needs.getversion.outputs.es_version }}
+      ZM_VERSION: zm_v${{ needs.getversion.outputs.zm_version }}
+      ES_VERSION: es_${{ needs.getversion.outputs.es_version }}
       DOCKER_CLI_EXPERIMENTAL: "enabled"
     strategy:
       matrix:
@@ -523,6 +523,19 @@ jobs:
             ${{ matrix.registry.repo }}:${{ matrix.images.arch_friendly }}-latest \
             --arch ${{ matrix.images.arch }} --variant ${{ matrix.images.variant }}
           docker manifest push ${{ matrix.registry.repo }}:${{ matrix.images.arch_friendly }}-latest
+
+      - name: Latest Release (zm_sha-es_sha)
+        if: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          set -x
+          docker manifest create \
+            ${{ matrix.registry.repo }}:${{ matrix.images.arch_friendly }}-${ZM_VERSION}-${ES_VERSION} \
+            ${{ matrix.registry.repo }}:${{ matrix.images.arch_friendly }}-${ZM_VERSION}-${ES_VERSION}
+          docker manifest annotate \
+            ${{ matrix.registry.repo }}:${{ matrix.images.arch_friendly }}-${ZM_VERSION}-${ES_VERSION} \
+            ${{ matrix.registry.repo }}:${{ matrix.images.arch_friendly }}-${ZM_VERSION}-${ES_VERSION} \
+            --arch ${{ matrix.images.arch }} --variant ${{ matrix.images.variant }}
+          docker manifest push ${{ matrix.registry.repo }}:${{ matrix.images.arch_friendly }}-${ZM_VERSION}-${ES_VERSION}
 
       - name: Ref (arch-ref)
         run: |
