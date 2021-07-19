@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GHCR_PAT }}
       - name: Update
         id: update
         run: |
@@ -22,21 +24,21 @@ jobs:
             | awk '/tag_name/{print $4;exit}' FS='[""]')
           es_version=$(wget \
             --no-check-certificate -qO - \
-            https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
+            https://api.github.com/repos/ZoneMinder/zmeventnotification/releases/latest \
             | awk '/tag_name/{print $4;exit}' FS='[""]')
           export VERSION="zm_v${zm_version}-es_${es_version}"
           echo "::set-output name=version::${VERSION}"
       - name: Push tag
         id: tag_version
         run: |
+          set -x
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git config user.password "${{ secrets.GHCR_PAT }}"
           git fetch --tags
           if [ $(git tag -l "${{ steps.update.outputs.version }}") ]; then
             echo "Tag ${{ steps.update.outputs.version }} already exists! Skipping tag creation."
           else
             echo "Creating tag ${{ steps.update.outputs.version }}"
-            git tag -l "${{ steps.update.outputs.version }}"
+            git tag "${{ steps.update.outputs.version }}"
             git push origin "${{ steps.update.outputs.version }}"
           fi

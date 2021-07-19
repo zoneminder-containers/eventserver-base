@@ -25,13 +25,13 @@ jobs:
           elif [[ "${{ github.event.client_payload.tagged }}" == "true" ]]; then
               # Build tag/release version
               ES_VERSION=$(wget \
-                -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/releases/latest \
+                -qO - https://api.github.com/repos/ZoneMinder/zmeventnotification/releases/latest \
                 | awk '/tag_name/{print $4;exit}' FS='[""]')
               ZM_VERSION=${{ github.event.client_payload.zm_version }}
           else
             # Build from latest ES commit
             ES_VERSION=$(wget \
-              -qO - https://api.github.com/repos/pliablepixels/zmeventnotification/commits/master \
+              -qO - https://api.github.com/repos/ZoneMinder/zmeventnotification/commits/master \
               | awk '/sha/{print $4;exit}' FS='[""]')
             ZM_VERSION="main"
           fi
