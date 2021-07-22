@@ -410,6 +410,7 @@ jobs:
           echo ${{ matrix.registry.repo }}:${ZM_VERSION}-${ES_VERSION} published
 
       - name: Deploy Ref (ref)
+        if: ${{ startsWith(github.ref, 'refs/heads/') }}
         run: |
           set -x
           docker manifest create \
@@ -538,6 +539,7 @@ jobs:
           docker manifest push ${{ matrix.registry.repo }}:${{ matrix.images.arch_friendly }}-${ZM_VERSION}-${ES_VERSION}
 
       - name: Ref (arch-ref)
+        if: ${{ startsWith(github.ref, 'refs/heads/') }}
         run: |
           set -x
           docker manifest create \
