@@ -100,3 +100,6 @@ ENV \
 
 LABEL \
     com.github.alexyao2015.es_version=${ES_VERSION}
+
+EXPOSE 443/tcp
+EXPOSE 9000/tcp
