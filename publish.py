@@ -216,12 +216,13 @@ def main():
             "docker",
             "manifest",
             "create",
+            "--amend",
             manifest,
             *docker_names.manifest_cmd_base,
         ]
         run_command(*cmd)
 
-        cmd = ["docker", "manifest", "push", manifest]
+        cmd = ["docker", "manifest", "push", "--purge", manifest]
         run_command(*cmd)
         print(f"Published {manifest}")
 
