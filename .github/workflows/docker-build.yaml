@@ -162,15 +162,15 @@ jobs:
         run: |
           set -x
           cd testsautomated
-          docker-compose up &
+          docker compose up &
           sleep 60
           if [ ! "$(docker ps -q -f name=zoneminder)" ]; then
               exit 1
           fi
-          docker-compose down
-          docker-compose up &
+          docker compose down
+          docker compose up &
           sleep 60
-          docker-compose down
+          docker compose down
 
       # Fails if zoneminder fails to stop normally
       - name: Start image and stop zoneminder
@@ -178,10 +178,10 @@ jobs:
         run: |
           set -x
           cd testsautomated
-          docker-compose up &
+          docker compose up &
           sleep 60
           docker stop zoneminder
-          docker-compose down
+          docker compose down
 
       # Fails if zoneminder doesn't stop when db is down
       - name: Start image and stop db
@@ -189,7 +189,7 @@ jobs:
         run: |
           set -x
           cd testsautomated
-          docker-compose up &
+          docker compose up &
           sleep 120
           docker stop db
           sleep 60
