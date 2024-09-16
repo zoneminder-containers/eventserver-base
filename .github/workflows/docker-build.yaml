@@ -65,13 +65,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action
         with:
           driver-opts: |
             env.BUILDKIT_STEP_LOG_MAX_SIZE=10000000
@@ -79,7 +79,7 @@ jobs:
           install: true
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache
         continue-on-error: true
         with:
           path: /tmp/.buildx-cache
@@ -122,7 +122,7 @@ jobs:
           docker save ci:${{ github.run_number }} | gzip > ci-${{ matrix.arch_friendly }}-${{ github.run_number }}.tar.gz
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact
         with:
           name: ci-${{ matrix.arch_friendly }}-${{ github.run_number }}
           path: ci-${{ matrix.arch_friendly }}-${{ github.run_number }}.tar.gz
@@ -140,13 +140,13 @@ jobs:
           - arm64
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action
 
       - name: Download container artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact
         with:
           name: ci-${{ matrix.arch }}-${{ github.run_number }}
 
@@ -206,10 +206,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download container artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact
 
       - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release
         with:
           tag_name: zm_v${{ needs.getversion.outputs.zm_version }}-es_${{ needs.getversion.outputs.es_version }}
           files: ci-*/ci-*.tar.gz
@@ -249,10 +249,10 @@ jobs:
           }
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout
 
       - name: Download container artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact
         with:
           name: ci-${{ matrix.arch }}-${{ github.run_number }}
 
@@ -347,7 +347,7 @@ jobs:
           }
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout
 
       - name: Docker login
         run: |
