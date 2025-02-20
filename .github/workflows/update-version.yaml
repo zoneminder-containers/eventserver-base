@@ -3,7 +3,7 @@ name: Update Event Server Version
 on:
   push:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
     name: Update Event Server Version
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GHCR_PAT }}
       - name: Update

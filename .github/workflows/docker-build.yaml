@@ -13,7 +13,7 @@ jobs:
       zm_version: ${{ steps.set-version.outputs.zm_version }}
       es_version: ${{ steps.set-version.outputs.es_version }}
     steps:
-    # Only build latest tagged if release version
+      # Only build latest tagged if release version
       - name: Set ES Build Version
         id: set-version
         run: |
@@ -65,13 +65,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             env.BUILDKIT_STEP_LOG_MAX_SIZE=10000000
@@ -79,7 +79,7 @@ jobs:
           install: true
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         continue-on-error: true
         with:
           path: /tmp/.buildx-cache
@@ -122,7 +122,7 @@ jobs:
           docker save ci:${{ github.run_number }} | gzip > ci-${{ matrix.arch_friendly }}-${{ github.run_number }}.tar.gz
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: ci-${{ matrix.arch_friendly }}-${{ github.run_number }}
           path: ci-${{ matrix.arch_friendly }}-${{ github.run_number }}.tar.gz
@@ -140,13 +140,13 @@ jobs:
           - arm64
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
 
       - name: Download container artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: ci-${{ matrix.arch }}-${{ github.run_number }}
 
@@ -206,10 +206,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download container artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
 
       - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: zm_v${{ needs.getversion.outputs.zm_version }}-es_${{ needs.getversion.outputs.es_version }}
           files: ci-*/ci-*.tar.gz
@@ -236,23 +236,23 @@ jobs:
           - arm64
         registry:
           - {
-            url: "https://index.docker.io/v1/",
-            username: DOCKER_USERNAME,
-            password: DOCKER_PASSWORD,
-            repo: yaoa/eventserver-base
-          }
+              url: "https://index.docker.io/v1/",
+              username: DOCKER_USERNAME,
+              password: DOCKER_PASSWORD,
+              repo: yaoa/eventserver-base,
+            }
           - {
-            url: ghcr.io/zoneminder-containers,
-            username: GCHR_USERNAME,
-            password: GHCR_PAT,
-            repo: ghcr.io/zoneminder-containers/eventserver-base
-          }
+              url: ghcr.io/zoneminder-containers,
+              username: GCHR_USERNAME,
+              password: GHCR_PAT,
+              repo: ghcr.io/zoneminder-containers/eventserver-base,
+            }
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Download container artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: ci-${{ matrix.arch }}-${{ github.run_number }}
 
@@ -334,20 +334,20 @@ jobs:
       matrix:
         registry:
           - {
-            url: "https://index.docker.io/v1/",
-            username: DOCKER_USERNAME,
-            password: DOCKER_PASSWORD,
-            repo: yaoa/eventserver-base
-          }
+              url: "https://index.docker.io/v1/",
+              username: DOCKER_USERNAME,
+              password: DOCKER_PASSWORD,
+              repo: yaoa/eventserver-base,
+            }
           - {
-            url: ghcr.io/zoneminder-containers,
-            username: GCHR_USERNAME,
-            password: GHCR_PAT,
-            repo: ghcr.io/zoneminder-containers/eventserver-base
-          }
+              url: ghcr.io/zoneminder-containers,
+              username: GCHR_USERNAME,
+              password: GHCR_PAT,
+              repo: ghcr.io/zoneminder-containers/eventserver-base,
+            }
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Docker login
         run: |
